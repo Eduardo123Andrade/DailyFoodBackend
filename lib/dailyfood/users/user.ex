@@ -1,8 +1,8 @@
 defmodule Dailyfood.Users.User do
-  alias Ecto.Changeset
   use Ecto.Schema
-
   import Ecto.Changeset
+
+  alias Ecto.Changeset
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @required_params [:name, :email, :password]
@@ -25,6 +25,8 @@ defmodule Dailyfood.Users.User do
     |> validate_length(:password, min: 8)
     |> put_password_hash()
   end
+
+  def build(changeset), do: apply_action(changeset, :create_user)
 
   defp put_password_hash(%Changeset{valid?: true, changes: %{password: password}} = changeset) do
     change(changeset, Pbkdf2.add_hash(password))

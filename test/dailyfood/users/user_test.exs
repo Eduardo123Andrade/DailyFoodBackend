@@ -1,4 +1,4 @@
-defmodule Dailyfood.User.UserTest do
+defmodule Dailyfood.Users.UserTest do
   use Dailyfood.DataCase, async: true
 
   import Dailyfood.Factory
