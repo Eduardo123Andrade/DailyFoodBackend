@@ -6,6 +6,7 @@ defmodule Dailyfood.Users.User do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @required_params [:name, :email, :password]
+  @update_params @required_params -- [:password]
 
   schema "users" do
     field :name, :string
@@ -19,11 +20,22 @@ defmodule Dailyfood.Users.User do
   def changeset(params) do
     %__MODULE__{}
     |> cast(params, @required_params)
-    |> validate_required(@required_params)
+    |> changes(@required_params)
+    |> put_password_hash()
+  end
+
+  def changeset(struct, params) do
+    struct
+    |> cast(params, @update_params)
+    |> changes(@update_params)
+  end
+
+  defp changes(struct, fields) do
+    struct
+    |> validate_required(fields)
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
     |> validate_length(:password, min: 8)
-    |> put_password_hash()
   end
 
   def build(changeset), do: apply_action(changeset, :create_user)
