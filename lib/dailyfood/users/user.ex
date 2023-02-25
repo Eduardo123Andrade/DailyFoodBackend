@@ -38,6 +38,7 @@ defmodule Dailyfood.Users.User do
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
     |> validate_length(:password, min: 8)
+    |> validate_length(:name, min: 5)
   end
 
   def build(changeset), do: apply_action(changeset, :create_user)
