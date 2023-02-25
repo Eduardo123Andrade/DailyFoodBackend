@@ -8,6 +8,8 @@ defmodule Dailyfood.Users.User do
   @required_params [:name, :email, :password]
   @update_params @required_params -- [:password]
 
+  @derive {Jason.Encoder, only: [:id, :name, :email]}
+
   schema "users" do
     field :name, :string
     field :email, :string
