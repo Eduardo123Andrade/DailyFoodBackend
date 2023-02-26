@@ -1,18 +1,23 @@
 defmodule DailyfoodWeb.Router do
   use DailyfoodWeb, :router
 
+  alias DailyfoodWeb.Plugs.UUIDChecker
+
   pipeline :api do
     plug :accepts, ["json"]
+    plug UUIDChecker
   end
 
   scope "/api", DailyfoodWeb do
     pipe_through :api
+
+    resources "/users/", UsersController, except: [:new, :edit, :index, :delete]
   end
 
   # Enables LiveDashboard only for development
   #
   # If you want to use the LiveDashboard in production, you should put
-  # it behind authentication and allow only admins to access it.
+  # it behind authentication and allow only admins to access it.s
   # If your application does not have an admins-only section yet,
   # you can use Plug.BasicAuth to set up some basic authentication
   # as long as you are also using SSL (which you should anyway).

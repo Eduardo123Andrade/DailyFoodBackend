@@ -10,6 +10,10 @@ import Config
 config :dailyfood,
   ecto_repos: [Dailyfood.Repo]
 
+config :dailyfood, Dailyfood.Repo,
+  migration_primary_key: [type: :binary_id],
+  migration_foreign_key: [type: :binary_id]
+
 # Configures the endpoint
 config :dailyfood, DailyfoodWeb.Endpoint,
   url: [host: "localhost"],
