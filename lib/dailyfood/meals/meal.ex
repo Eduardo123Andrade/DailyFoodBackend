@@ -27,6 +27,8 @@ defmodule Dailyfood.Meals.Meal do
     |> changes(@required_params, foods)
   end
 
+  def build(changeset), do: apply_action(changeset, :create_meal)
+
   defp changes(struct, fields, foods) do
     foods_changeset = Enum.map(foods, &Food.changeset/1)
 

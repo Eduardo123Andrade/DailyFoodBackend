@@ -4,6 +4,7 @@ defmodule Dailyfood.Meal.MealTest do
   import Dailyfood.Factory
 
   alias Ecto.Changeset
+  alias Dailyfood.Foods.Food
   alias Dailyfood.Meals.Meal
 
   describe "changeset/2" do
@@ -43,6 +44,60 @@ defmodule Dailyfood.Meal.MealTest do
       foods = []
 
       response = Meal.changeset(params, foods)
+
+      expected_response = %{
+        foods: ["should have at least 1 item(s)"],
+        measurement_date: ["can't be blank"],
+        user_id: ["can't be blank"]
+      }
+
+      assert errors_on(response) == expected_response
+    end
+  end
+
+  describe "build/1" do
+    test "when all parameters is right, return a valid changeset" do
+      params = build(:meal_params)
+
+      foods = [
+        build(:food_params),
+        build(:food_params, %{"description" => "Feijao"})
+      ]
+
+      meal_changeset = Meal.changeset(params, foods)
+
+      response = Meal.build(meal_changeset)
+
+      assert {:ok,
+              %Meal{
+                id: nil,
+                description: nil,
+                measurement_date: ~N[2023-02-28 23:00:07],
+                user_id: "957da868-ce7f-4eec-bcdc-97b8c992a60d",
+                foods: [
+                  %Food{
+                    id: nil,
+                    description: "Arroz",
+                    weight: 100,
+                    meal_id: nil
+                  },
+                  %Food{
+                    id: nil,
+                    description: "Feijao",
+                    weight: 100,
+                    meal_id: nil
+                  }
+                ]
+              }} = response
+    end
+
+    test "when there are some error, returns an invalid changeset" do
+      params = build(:meal_params, %{"measurement_date" => nil, "user_id" => nil})
+      foods = []
+
+      meal_changeset = Meal.changeset(params, foods)
+
+      {:error, response} = Meal.build(meal_changeset)
 
       expected_response = %{
         foods: ["should have at least 1 item(s)"],

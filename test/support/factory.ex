@@ -53,7 +53,6 @@ defmodule Dailyfood.Factory do
       user_id: "957da868-ce7f-4eec-bcdc-97b8c992a60d",
       measurement_date: ~N[2023-02-28 23:00:07],
       description: "Almoço"
-      # foods: []
     }
   end
 end
