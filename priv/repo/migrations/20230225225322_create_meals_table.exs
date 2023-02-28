@@ -4,7 +4,7 @@ defmodule Dailyfood.Repo.Migrations.CreateMealsTable do
   def change do
     create table(:meals) do
       add :description, :string
-      add :measurement_date, :"time without time zone"
+      add :measurement_date, :naive_datetime
       add :user_id, references(:users)
 
       timestamps()
