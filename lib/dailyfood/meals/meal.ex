@@ -7,7 +7,7 @@ defmodule Dailyfood.Meals.Meal do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
-  @required_params [:measurement_date, :user_id]
+  @required_params [:description, :measurement_date, :user_id]
   @derive {Jason.Encoder, only: [:id, :measurement_date, :description, :foods]}
 
   schema "meals" do

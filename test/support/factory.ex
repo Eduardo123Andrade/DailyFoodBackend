@@ -40,7 +40,6 @@ defmodule Dailyfood.Factory do
 
   def meal_params_factory do
     %{
-      "id" => "8bb494a5-cae7-4027-845f-5b2ba10c6677",
       "user_id" => "957da868-ce7f-4eec-bcdc-97b8c992a60d",
       "measurement_date" => ~N[2023-02-28 23:00:07],
       "description" => "Almoço"
