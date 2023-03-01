@@ -1,21 +1,27 @@
 defmodule Dailyfood.Meals.Get do
   import Ecto.Query
 
-  # alias Dailyfood.Error
+  alias Dailyfood.Users.User
   alias Dailyfood.Meals.Meal
-  # alias Dailyfood.Users.User
   alias Dailyfood.Repo
 
-  def call(%{initial_date: initial_date, final_date: final_date}) do
+  def call(%{initial_date: initial_date, final_date: final_date, user_id: user_id}) do
     start_time = format_date(initial_date, "0-0-0")
     end_time = format_date(final_date, "23-59-59")
 
     query =
       from meal in Meal,
-        where: meal.measurement_date >= ^start_time and meal.measurement_date <= ^end_time
+        join: foods in assoc(meal, :foods),
+        order_by: meal.measurement_date,
+        where:
+          meal.measurement_date >= ^start_time and meal.measurement_date <= ^end_time and
+            meal.user_id == ^user_id,
+        preload: [foods: foods]
 
-    query
-    |> Repo.all()
+    with {:ok, %User{}} <- Dailyfood.get_user_by_id(user_id) do
+      meals = Repo.all(query)
+      {:ok, meals}
+    end
   end
 
   defp split_date(date) do
