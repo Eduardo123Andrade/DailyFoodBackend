@@ -72,7 +72,7 @@ defmodule Dailyfood.Meal.GetTest do
       start_date = "2023-02-28"
       end_date = "2023-03-03"
 
-      params = %{initial_date: start_date, final_date: end_date, user_id: user_id}
+      params = %{"initial_date" => start_date, "final_date" => end_date, "user_id" => user_id}
 
       {:ok, meals} = Get.call(params)
 
@@ -90,7 +90,9 @@ defmodule Dailyfood.Meal.GetTest do
       start_date = "2023-02-28"
       end_date = "2023-03-03"
 
-      response = Get.call(%{initial_date: start_date, final_date: end_date, user_id: user_id})
+      params = %{"initial_date" => start_date, "final_date" => end_date, "user_id" => user_id}
+
+      response = Get.call(params)
 
       assert {:error, %Error{result: "User not found", status: :not_found}} = response
     end
