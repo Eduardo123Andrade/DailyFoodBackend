@@ -72,7 +72,9 @@ defmodule Dailyfood.Meal.GetTest do
       start_date = "2023-02-28"
       end_date = "2023-03-03"
 
-      {:ok, meals} = Get.call(%{initial_date: start_date, final_date: end_date, user_id: user_id})
+      params = %{initial_date: start_date, final_date: end_date, user_id: user_id}
+
+      {:ok, meals} = Get.call(params)
 
       [first_meal | _] = meals
 

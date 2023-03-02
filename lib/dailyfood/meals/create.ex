@@ -1,7 +1,6 @@
 defmodule Dailyfood.Meals.Create do
   alias Dailyfood.Error
   alias Dailyfood.Meals.Meal
-  # alias Dailyfood.Users.User
   alias Dailyfood.Repo
 
   def call(%{"foods" => foods_params, "user_id" => user_id} = params) do

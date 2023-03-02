@@ -3,7 +3,6 @@ defmodule Dailyfood.Meal.CreateTest do
 
   import Dailyfood.Factory
 
-  alias Ecto.Changeset
   alias Dailyfood.Error
   alias Dailyfood.Foods.Food
   alias Dailyfood.Meals.{Create, Meal}
@@ -32,33 +31,29 @@ defmodule Dailyfood.Meal.CreateTest do
 
       assert {:ok,
               %Meal{
-                id: meals_id,
+                id: ^meals_id,
                 description: "Almoço",
                 measurement_date: ~N[2023-02-28 23:00:07],
-                user_id: user_id,
+                user_id: ^user_id,
                 foods: [
                   %Food{
                     description: "Arroz",
                     weight: 100,
-                    meal_id: meals_id
+                    meal_id: ^meals_id
                   },
                   %Food{
                     description: "Feijão",
                     weight: 100,
-                    meal_id: meals_id
+                    meal_id: ^meals_id
                   }
                 ]
               }} = response
     end
 
     test "when there an error, return a error", %{user_id: user_id} do
-      user_id = "48101fa5-dd26-4629-9b01-a7e0f3c31590"
-
       meals = build(:meal_params, %{"foods" => [], "user_id" => user_id})
 
       response = Create.call(meals)
-
-      IO.inspect(response, label: "RESPONSE")
 
       expected_response = %{
         foods: ["should have at least 1 item(s)"]

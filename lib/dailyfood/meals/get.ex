@@ -36,6 +36,4 @@ defmodule Dailyfood.Meals.Get do
     {:ok, date} = NaiveDateTime.new(year, month, day, hour, minute, second)
     date
   end
-
-  # defp convert_string_to_number
 end

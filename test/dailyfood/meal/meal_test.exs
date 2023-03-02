@@ -71,7 +71,7 @@ defmodule Dailyfood.Meal.MealTest do
       assert {:ok,
               %Meal{
                 id: nil,
-                description: nil,
+                description: "Almoço",
                 measurement_date: ~N[2023-02-28 23:00:07],
                 user_id: "957da868-ce7f-4eec-bcdc-97b8c992a60d",
                 foods: [
