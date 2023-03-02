@@ -1,7 +1,61 @@
 defmodule DailyfoodWeb.MealControllerTest do
+  alias Dailyfood.Meals.Create
   use DailyfoodWeb.ConnCase, async: true
 
   import Dailyfood.Factory
+
+  defp create_meals() do
+    user_id = "957da868-ce7f-4eec-bcdc-97b8c992a60d"
+    food1 = build(:food_params)
+    food2 = build(:food_params)
+    food3 = build(:food_params, %{"description" => "Carne"})
+    food4 = build(:food_params, %{"description" => "Salada"})
+
+    meal_params =
+      build(:meal_params, %{
+        "foods" => [food1, food2],
+        "measurement_date" => ~N[2023-02-28 23:00:07],
+        "user_id" => user_id
+      })
+
+    Create.call(meal_params)
+
+    meal_params =
+      build(:meal_params, %{
+        "foods" => [food1, food3],
+        "measurement_date" => ~N[2023-03-01 23:00:07],
+        "user_id" => user_id
+      })
+
+    Create.call(meal_params)
+
+    meal_params =
+      build(:meal_params, %{
+        "foods" => [food1, food4],
+        "measurement_date" => ~N[2023-03-02 23:00:07],
+        "user_id" => user_id
+      })
+
+    Create.call(meal_params)
+
+    meal_params =
+      build(:meal_params, %{
+        "foods" => [food2, food4],
+        "measurement_date" => ~N[2023-03-03 23:00:07],
+        "user_id" => user_id
+      })
+
+    Create.call(meal_params)
+
+    meal_params =
+      build(:meal_params, %{
+        "foods" => [food4, food3],
+        "measurement_date" => ~N[2023-03-04 23:00:07],
+        "user_id" => user_id
+      })
+
+    Create.call(meal_params)
+  end
 
   describe "create/2" do
     setup %{conn: conn} do
@@ -67,6 +121,94 @@ defmodule DailyfoodWeb.MealControllerTest do
       response =
         conn
         |> post(Routes.meals_path(conn, :create), params)
+        |> json_response(:not_found)
+
+      expected_response = %{"message" => "User not found"}
+
+      assert expected_response == response
+    end
+  end
+
+  describe "show/2" do
+    setup %{conn: conn} do
+      user = insert(:user)
+      create_meals()
+
+      {:ok, conn: conn, user_id: user.id}
+    end
+
+    test "when given a valid dates, return a list of meals", %{conn: conn, user_id: user_id} do
+      initial_date = "2023-02-28"
+      final_date = "2023-03-02"
+
+      response =
+        conn
+        |> get(Routes.meals_path(conn, :show, initial_date, final_date, user_id))
+        |> json_response(:ok)
+
+      [first_meal | _] = response
+
+      expected_response_length = 3
+
+      assert expected_response_length == Enum.count(response)
+
+      assert %{
+               "meal" => %{
+                 "description" => "Almoço",
+                 "foods" => [
+                   %{"description" => "Arroz", "weight" => 100},
+                   %{"description" => "Arroz", "weight" => 100}
+                 ],
+                 "id" => _meal_id,
+                 "measurement_date" => "2023-02-28T23:00:07"
+               }
+             } = first_meal
+
+      # assert [
+      #          %{
+      #            "meal" => %{
+      #              "description" => "Almoço",
+      #              "foods" => [
+      #                %{"description" => "Arroz", "weight" => 100},
+      #                %{"description" => "Arroz", "weight" => 100}
+      #              ],
+      #              "id" => _meal_id,
+      #              "measurement_date" => "2023-02-28T23:00:07"
+      #            }
+      #          },
+      #          %{
+      #            "meal" => %{
+      #              "description" => "Almoço",
+      #              "foods" => [
+      #                %{"description" => "Arroz", "weight" => 100},
+      #                %{"description" => "Carne", "weight" => 100}
+      #              ],
+      #              "id" => _meal_id,
+      #              "measurement_date" => "2023-03-01T23:00:07"
+      #            }
+      #          },
+      #          %{
+      #            "meal" => %{
+      #              "description" => "Almoço",
+      #              "foods" => [
+      #                %{"description" => "Arroz", "weight" => 100},
+      #                %{"description" => "Salada", "weight" => 100}
+      #              ],
+      #              "id" => _meal_id,
+      #              "measurement_date" => "2023-03-02T23:00:07"
+      #            }
+      #          }
+      #        ] = response
+    end
+
+    test "when given a invalid user id, return a error", %{conn: conn} do
+      initial_date = "2023-02-28"
+      final_date = "2023-03-02"
+      user_id = "b4608c3d-eb45-4c4a-b6bc-474e080eeb9b"
+
+      response =
+        conn
+        |> get(Routes.meals_path(conn, :show, initial_date, final_date, user_id))
         |> json_response(:not_found)
 
       expected_response = %{"message" => "User not found"}
