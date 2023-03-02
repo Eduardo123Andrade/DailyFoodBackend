@@ -1,19 +1,11 @@
 defmodule DailyfoodWeb.UsersControllerTest do
   use DailyfoodWeb.ConnCase, async: true
 
-  # import Mox
   import Dailyfood.Factory
-
-  # alias Rockelivery.ViaCep.ClientMock
-  # alias RockeliveryWeb.Auth.Guardian
 
   describe "create/2" do
     test "when all params are valid, creates the user", %{conn: conn} do
       params = build(:user_params)
-
-      # expect(ClientMock, :get_cep_info, fn _cep ->
-      #   {:ok, build(:cep_info)}
-      # end)
 
       response =
         conn
@@ -31,11 +23,7 @@ defmodule DailyfoodWeb.UsersControllerTest do
     end
 
     test "when theres is some error, returns the error", %{conn: conn} do
-      params =
-        %{
-          # "email" => "email@email",
-          # "password" => "123123123"
-        }
+      params = %{}
 
       response =
         conn

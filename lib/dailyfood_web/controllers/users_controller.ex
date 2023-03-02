@@ -24,7 +24,7 @@ defmodule DailyfoodWeb.UsersController do
     end
   end
 
-  def update(conn, params) do
+  def update(%Conn{} = conn, params) do
     with {:ok, %User{} = user} <- Dailyfood.update_user(params) do
       conn
       |> put_status(:ok)
