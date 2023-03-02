@@ -5,7 +5,7 @@ defmodule Dailyfood.Meals.Get do
   alias Dailyfood.Meals.Meal
   alias Dailyfood.Repo
 
-  def call(%{initial_date: initial_date, final_date: final_date, user_id: user_id}) do
+  def call(%{"initial_date" => initial_date, "final_date" => final_date, "user_id" => user_id}) do
     start_time = format_date(initial_date, "0-0-0")
     end_time = format_date(final_date, "23-59-59")
 

@@ -11,4 +11,8 @@ defmodule DailyfoodWeb.MealsView do
   end
 
   def render("meal.json", %{meal: %Meal{} = meal}), do: %{meal: meal}
+
+  def render("meals.json", %{meals: meals}), do: Enum.map(meals, &render_meal_from_list/1)
+
+  defp render_meal_from_list(%Meal{} = meal), do: render("meal.json", %{meal: meal})
 end

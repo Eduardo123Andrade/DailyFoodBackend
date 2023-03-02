@@ -13,7 +13,7 @@ defmodule DailyfoodWeb.Router do
 
     resources "/users/", UsersController, except: [:new, :edit, :index, :delete]
     post "/meals/create", MealsController, :create
-    get "/meals/:initial_date/:final_date", MealsController, :show
+    get "/meals/:initial_date/:final_date/:user_id", MealsController, :show
   end
 
   # Enables LiveDashboard only for development

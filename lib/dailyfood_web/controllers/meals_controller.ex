@@ -16,8 +16,11 @@ defmodule DailyfoodWeb.MealsController do
     end
   end
 
-  def show(%Conn{} = conn, _params) do
-    conn
-    |> put_status(:ok)
+  def show(%Conn{} = conn, params) do
+    with {:ok, meals} <- Dailyfood.get_meals(params) do
+      conn
+      |> put_status(:ok)
+      |> render("meals.json", %{meals: meals})
+    end
   end
 end
