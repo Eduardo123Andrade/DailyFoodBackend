@@ -2,6 +2,7 @@ defmodule Dailyfood.Users.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Dailyfood.Meals.Meal
   alias Ecto.Changeset
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -15,6 +16,8 @@ defmodule Dailyfood.Users.User do
     field :email, :string
     field :password, :string, virtual: true
     field :password_hash, :string
+
+    has_many :meal, Meal
 
     timestamps()
   end
