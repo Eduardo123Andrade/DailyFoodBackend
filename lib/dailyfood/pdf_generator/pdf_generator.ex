@@ -1,27 +1,27 @@
 defmodule Dailyfood.PdfGenerator.PdfGenerator do
-  # import PdfGenerator
+  alias Dailyfood.UuidGenerator.UuidGenerator
 
   def call() do
     html = "<body>Olar</body>"
+    filename = UuidGenerator.call()
 
     html
     |> PdfGenerator.generate(page_size: "A5")
-    |> move_to_pdf_folder()
+    |> move_to_pdf_folder(filename)
     |> delete_temp_files()
 
-    {:ok, "PDFs/test.pdf"}
+    {:ok, "PDFs/#{filename}.pdf"}
   end
 
-  defp move_to_pdf_folder({:ok, filename}) do
+  defp move_to_pdf_folder({:ok, filename}, output_filename) do
     {:ok, pdf_content} = File.read(filename)
-    File.write("PDFs/test.pdf", pdf_content)
+
+    File.write("PDFs/#{output_filename}.pdf", pdf_content)
 
     {:ok, filename}
   end
 
   defp delete_temp_files({:ok, filename}) do
-    IO.inspect(filename, label: "FILE_NAME")
-
     File.rm_rf(filename)
 
     filename
