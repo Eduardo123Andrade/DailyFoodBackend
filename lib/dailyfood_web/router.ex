@@ -14,6 +14,7 @@ defmodule DailyfoodWeb.Router do
     resources "/users/", UsersController, except: [:new, :edit, :index, :delete]
     post "/meals/create", MealsController, :create
     get "/meals/:initial_date/:final_date/:user_id", MealsController, :show
+    post "/meals/generate-pdf", MealsController, :generate_pdf
   end
 
   # Enables LiveDashboard only for development
