@@ -14,6 +14,6 @@ defmodule Dailyfood do
 
   defdelegate meal_create(params), to: MealCreate, as: :call
   defdelegate get_meals(params), to: MealGet, as: :call
-  defdelegate generate_meals_pdf(), to: PdfGenerator, as: :call
+  defdelegate generate_meals_pdf(params), to: PdfGenerator, as: :call
   defdelegate generate_uuid(), to: UuidGenerator, as: :call
 end

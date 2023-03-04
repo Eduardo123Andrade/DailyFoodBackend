@@ -1,7 +1,7 @@
 defmodule Dailyfood.PdfGenerator.PdfGenerator do
   alias Dailyfood.UuidGenerator.UuidGenerator
 
-  def call() do
+  def call(_params) do
     html = "<body>Olar</body>"
     filename = UuidGenerator.call()
 
