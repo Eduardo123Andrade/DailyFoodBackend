@@ -52,7 +52,7 @@ defmodule Dailyfood.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-
+      {:pdf_generator, ">=0.6.2" },
       # Development and Test
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
 
