@@ -1,12 +1,13 @@
-defmodule Dailyfood.PdfGenerator.PdfGenerator do
+defmodule Dailyfood.PdfGenerator.PDFGenerator do
   alias Dailyfood.UuidGenerator.UuidGenerator
+  alias Dailyfood.PdfGenerator.HtmlGenerator
 
-  def call(_params) do
-    html = "<body>Olar</body>"
+  def call() do
+    html = HtmlGenerator.call()
     filename = UuidGenerator.call()
 
     html
-    |> PdfGenerator.generate(page_size: "A5")
+    |> PdfGenerator.generate(page_size: "A5", encoding: :utf8)
     |> move_to_pdf_folder(filename)
     |> delete_temp_files()
 
