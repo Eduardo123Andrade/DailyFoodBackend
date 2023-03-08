@@ -25,10 +25,10 @@ defmodule DailyfoodWeb.MealsController do
   end
 
   def generate_pdf(%Conn{} = conn, params) do
-    with {:ok, _file_path} <- Dailyfood.generate_meals_pdf(params) do
+    with {:ok, file_path} <- Dailyfood.generate_meals_pdf(params) do
       conn
       |> put_status(:ok)
-      |> json(%{"message" => "ok"})
+      |> json(%{"url" => file_path})
     end
   end
 end
