@@ -8,6 +8,7 @@ defmodule Dailyfood.Meal.GetTest do
   alias Dailyfood.Users.Create, as: UserCreate
 
   defp create_meals(user_id) do
+    meal_ids = []
     food1 = build(:food_params)
     food2 = build(:food_params)
     food3 = build(:food_params, %{"description" => "Carne"})
@@ -20,7 +21,9 @@ defmodule Dailyfood.Meal.GetTest do
         "user_id" => user_id
       })
 
-    Create.call(meal_params)
+    {:ok, %Meal{id: meal_id}} = Create.call(meal_params)
+
+    meal_ids = meal_ids ++ [meal_id]
 
     meal_params =
       build(:meal_params, %{
@@ -29,7 +32,9 @@ defmodule Dailyfood.Meal.GetTest do
         "user_id" => user_id
       })
 
-    Create.call(meal_params)
+    {:ok, %Meal{id: meal_id}} = Create.call(meal_params)
+
+    meal_ids = meal_ids ++ [meal_id]
 
     meal_params =
       build(:meal_params, %{
@@ -38,7 +43,9 @@ defmodule Dailyfood.Meal.GetTest do
         "user_id" => user_id
       })
 
-    Create.call(meal_params)
+    {:ok, %Meal{id: meal_id}} = Create.call(meal_params)
+
+    meal_ids = meal_ids ++ [meal_id]
 
     meal_params =
       build(:meal_params, %{
@@ -47,7 +54,9 @@ defmodule Dailyfood.Meal.GetTest do
         "user_id" => user_id
       })
 
-    Create.call(meal_params)
+    {:ok, %Meal{id: meal_id}} = Create.call(meal_params)
+
+    meal_ids = meal_ids ++ [meal_id]
 
     meal_params =
       build(:meal_params, %{
@@ -56,10 +65,14 @@ defmodule Dailyfood.Meal.GetTest do
         "user_id" => user_id
       })
 
-    Create.call(meal_params)
+    {:ok, %Meal{id: meal_id}} = Create.call(meal_params)
+
+    meal_ids = meal_ids ++ [meal_id]
+
+    meal_ids
   end
 
-  describe "call/1" do
+  describe "by_date/1" do
     setup _ do
       user_param = build(:user_params)
       {:ok, user} = UserCreate.call(user_param)
@@ -74,7 +87,7 @@ defmodule Dailyfood.Meal.GetTest do
 
       params = %{"initial_date" => start_date, "final_date" => end_date, "user_id" => user_id}
 
-      {:ok, meals} = Get.call(params)
+      {:ok, meals} = Get.by_date(params)
 
       [first_meal | _] = meals
 
@@ -92,7 +105,43 @@ defmodule Dailyfood.Meal.GetTest do
 
       params = %{"initial_date" => start_date, "final_date" => end_date, "user_id" => user_id}
 
-      response = Get.call(params)
+      response = Get.by_date(params)
+
+      assert {:error, %Error{result: "User not found", status: :not_found}} = response
+    end
+  end
+
+  describe "by_ids/1" do
+    setup _ do
+      user_param = build(:user_params)
+      {:ok, user} = UserCreate.call(user_param)
+
+      meal_ids = create_meals(user.id)
+      {:ok, user_id: user.id, meal_ids: meal_ids}
+    end
+
+    test "when given a list with valid ids, return a list of meal", %{
+      user_id: user_id,
+      meal_ids: meal_ids
+    } do
+      params = %{"meal_ids" => meal_ids, "user_id" => user_id}
+
+      {:ok, meals} = Get.by_ids(params)
+
+      [%Meal{} = first_meal | _] = meals
+
+      expected_length = 5
+
+      assert Enum.count(meals) == expected_length
+      assert %Meal{foods: foods} = first_meal
+      assert Enum.count(foods) >= 1
+    end
+
+    test "when a invalid user id is given, return a error", %{meal_ids: meal_ids} do
+      user_id = "48101fa5-dd26-4629-9b01-a7e0f3c31590"
+      params = %{"meal_ids" => meal_ids, "user_id" => user_id}
+
+      response = Get.by_ids(params)
 
       assert {:error, %Error{result: "User not found", status: :not_found}} = response
     end
