@@ -15,7 +15,7 @@ defmodule Dailyfood.PdfGenerator.PDFGenerator do
       |> move_to_pdf_folder(output_filename)
       |> delete_temp_files()
 
-      {:ok, "PDFs/#{filename}.pdf"}
+      {:ok, "PDFs/#{output_filename}.pdf"}
     end
   end
 
