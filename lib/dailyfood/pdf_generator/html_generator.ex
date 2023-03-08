@@ -44,8 +44,8 @@ defmodule Dailyfood.PdfGenerator.HtmlGenerator do
     measurement_date: ~N[2023-03-07 18:28:00]
   }
 
-  def call do
-    meals = [@meal1, @meal2]
+  def call(%{"meals" => meals, "user_id" => user_id}) do
+    {:ok, user} = Dailyfood.get_user_by_id(user_id)
 
     """
     <body>
@@ -55,7 +55,7 @@ defmodule Dailyfood.PdfGenerator.HtmlGenerator do
         <div style="width: 100%;">
           <div style="padding: 5px 10px; border-style: solid; border-width: 1px; margin-bottom: 1px;">
             <label>
-              Eduardo Andrade
+              #{user.name}
             </label>
           </div>
           <div style="padding: 5px 10px; border-style: solid; border-width: 1px; margin-bottom: 1px;">

@@ -2,9 +2,12 @@ defmodule Dailyfood.PdfGenerator.PDFGenerator do
   alias Dailyfood.UuidGenerator.UuidGenerator
   alias Dailyfood.PdfGenerator.HtmlGenerator
 
-  def call() do
-    html = HtmlGenerator.call()
+  def call(%{"meal_ids" => meal_ids, "user_id" => user_id}) do
+    {:ok, meals} = Dailyfood.get_meals_by_ids(%{"meal_ids" => meal_ids, "user_id" => user_id})
+
+    html = HtmlGenerator.call(%{"meals" => meals, "user_id" => user_id})
     filename = UuidGenerator.call()
+    IO.inspect(filename)
 
     html
     |> PdfGenerator.generate(page_size: "A5", encoding: :utf8)

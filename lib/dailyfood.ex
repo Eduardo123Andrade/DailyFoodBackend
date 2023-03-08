@@ -5,7 +5,7 @@ defmodule Dailyfood do
   alias Dailyfood.Users.Create, as: UserCreate
   alias Dailyfood.Users.Get, as: UserGet
   alias Dailyfood.Users.Update, as: UserUpdate
-  alias Dailyfood.PdfGenerator.PdfGenerator
+  alias Dailyfood.PdfGenerator.PDFGenerator
   alias Dailyfood.UuidGenerator.UuidGenerator
 
   defdelegate user_create(params), to: UserCreate, as: :call
@@ -13,7 +13,8 @@ defmodule Dailyfood do
   defdelegate update_user(params), to: UserUpdate, as: :call
 
   defdelegate meal_create(params), to: MealCreate, as: :call
-  defdelegate get_meals(params), to: MealGet, as: :call
-  defdelegate generate_meals_pdf(params), to: PdfGenerator, as: :call
+  defdelegate get_meals_by_date(params), to: MealGet, as: :by_date
+  defdelegate get_meals_by_ids(params), to: MealGet, as: :by_ids
+  defdelegate generate_meals_pdf(params), to: PDFGenerator, as: :call
   defdelegate generate_uuid(), to: UuidGenerator, as: :call
 end

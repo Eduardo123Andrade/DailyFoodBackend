@@ -25,6 +25,7 @@ defmodule Dailyfood.PdfGenerator.RenderMeals do
     } = meal
 
     total_weight = sum_foods_weight(foods)
+    IO.inspect(description, label: "Description")
 
     """
       <div style="padding-top: 10px;">
