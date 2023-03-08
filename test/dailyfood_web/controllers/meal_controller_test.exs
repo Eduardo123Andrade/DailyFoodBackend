@@ -222,5 +222,32 @@ defmodule DailyfoodWeb.MealControllerTest do
       assert %{"url" => _url} = response
       assert true == includes_pdf
     end
+
+    test "when given a meals list, return a error", %{conn: conn, user_id: user_id} do
+      params = %{"meal_ids" => [], "user_id" => user_id}
+
+      response =
+        conn
+        |> post(Routes.meals_path(conn, :generate_pdf), params)
+        |> json_response(:not_found)
+
+      expected_response = %{"message" => "Meals not found"}
+
+      assert expected_response == response
+    end
+
+    test "when given a invalid user id, return a error", %{conn: conn, meal_ids: meal_ids} do
+      user_id = "b4608c3d-eb45-4c4a-b6bc-474e080eeb9b"
+      params = %{"meal_ids" => meal_ids, "user_id" => user_id}
+
+      response =
+        conn
+        |> post(Routes.meals_path(conn, :generate_pdf, params))
+        |> json_response(:not_found)
+
+      expected_response = %{"message" => "User not found"}
+
+      assert expected_response == response
+    end
   end
 end
