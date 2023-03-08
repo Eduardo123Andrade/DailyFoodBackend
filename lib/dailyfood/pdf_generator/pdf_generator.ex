@@ -8,14 +8,10 @@ defmodule Dailyfood.PdfGenerator.PDFGenerator do
     with {:ok, user} <- Dailyfood.get_user_by_id(user_id),
          {:ok, meals} <- Dailyfood.get_meals_by_ids(params),
          {:ok, html_content} <- generate_pdf_content(meals, user),
-         {:ok, filename} <- PdfGenerator.generate(html_content, page_size: "A5", encoding: :utf8) do
-      output_filename = UuidGenerator.call()
-
-      filename
-      |> move_to_pdf_folder(output_filename)
-      |> delete_temp_files()
-
-      {:ok, "PDFs/#{output_filename}.pdf"}
+         {:ok, filename} <- PdfGenerator.generate(html_content, page_size: "A5", encoding: :utf8),
+         {:ok, output_path} <- move_to_pdf_folder(filename),
+         {:ok, _} <- delete_temp_files(filename) do
+      {:ok, output_path}
     end
   end
 
@@ -27,15 +23,18 @@ defmodule Dailyfood.PdfGenerator.PDFGenerator do
     HtmlGenerator.call(%{meals: meals, user: user})
   end
 
-  defp move_to_pdf_folder(filename, output_filename) do
+  defp move_to_pdf_folder(filename) do
+    output_filename = UuidGenerator.call()
+
     {:ok, pdf_content} = File.read(filename)
+    output_path = "PDFs/#{output_filename}.pdf"
 
-    File.write("PDFs/#{output_filename}.pdf", pdf_content)
+    response = File.write(output_path, pdf_content)
 
-    {:ok, filename}
+    {response, output_path}
   end
 
-  defp delete_temp_files({:ok, filename}) do
+  defp delete_temp_files(filename) do
     File.rm_rf(filename)
 
     filename
