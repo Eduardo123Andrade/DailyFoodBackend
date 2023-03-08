@@ -3,8 +3,8 @@ defmodule Dailyfood.Users.UserTest do
 
   import Dailyfood.Factory
 
-  alias Ecto.Changeset
   alias Dailyfood.Users.User
+  alias Ecto.Changeset
 
   describe "changeset/1" do
     test "when all params are valid, return a valid changeset" do

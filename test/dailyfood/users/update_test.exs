@@ -4,7 +4,7 @@ defmodule Dailyfood.Users.UpdateTest do
   import Dailyfood.Factory
 
   alias Dailyfood.Error
-  alias Dailyfood.Users.{Create, User, Update}
+  alias Dailyfood.Users.{Create, Update, User}
 
   describe "call/1" do
     test "when all params are valid, return a user with updated data" do

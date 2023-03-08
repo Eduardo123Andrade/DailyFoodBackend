@@ -41,6 +41,7 @@ defmodule Dailyfood.MixProject do
   defp deps do
     [
       # phoenix
+      {:elixir_uuid, "~> 1.2"},
       {:phoenix, "~> 1.6.15"},
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.6"},
@@ -52,6 +53,7 @@ defmodule Dailyfood.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
+      {:pdf_generator, ">=0.6.2"},
 
       # Development and Test
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},

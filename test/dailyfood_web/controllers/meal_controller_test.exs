@@ -1,11 +1,15 @@
 defmodule DailyfoodWeb.MealControllerTest do
-  alias Dailyfood.Meals.Create
   use DailyfoodWeb.ConnCase, async: true
+
+  alias Dailyfood.Meals.Create
+  alias Dailyfood.Meals.Meal
 
   import Dailyfood.Factory
 
-  defp create_meals() do
+  defp create_meals do
     user_id = "957da868-ce7f-4eec-bcdc-97b8c992a60d"
+    meal_ids = []
+
     food1 = build(:food_params)
     food2 = build(:food_params)
     food3 = build(:food_params, %{"description" => "Carne"})
@@ -18,7 +22,9 @@ defmodule DailyfoodWeb.MealControllerTest do
         "user_id" => user_id
       })
 
-    Create.call(meal_params)
+    {:ok, %Meal{id: meal_id}} = Create.call(meal_params)
+
+    meal_ids = meal_ids ++ [meal_id]
 
     meal_params =
       build(:meal_params, %{
@@ -27,7 +33,9 @@ defmodule DailyfoodWeb.MealControllerTest do
         "user_id" => user_id
       })
 
-    Create.call(meal_params)
+    {:ok, %Meal{id: meal_id}} = Create.call(meal_params)
+
+    meal_ids = meal_ids ++ [meal_id]
 
     meal_params =
       build(:meal_params, %{
@@ -36,7 +44,9 @@ defmodule DailyfoodWeb.MealControllerTest do
         "user_id" => user_id
       })
 
-    Create.call(meal_params)
+    {:ok, %Meal{id: meal_id}} = Create.call(meal_params)
+
+    meal_ids = meal_ids ++ [meal_id]
 
     meal_params =
       build(:meal_params, %{
@@ -45,7 +55,9 @@ defmodule DailyfoodWeb.MealControllerTest do
         "user_id" => user_id
       })
 
-    Create.call(meal_params)
+    {:ok, %Meal{id: meal_id}} = Create.call(meal_params)
+
+    meal_ids = meal_ids ++ [meal_id]
 
     meal_params =
       build(:meal_params, %{
@@ -54,7 +66,11 @@ defmodule DailyfoodWeb.MealControllerTest do
         "user_id" => user_id
       })
 
-    Create.call(meal_params)
+    {:ok, %Meal{id: meal_id}} = Create.call(meal_params)
+
+    meal_ids = meal_ids ++ [meal_id]
+
+    meal_ids
   end
 
   describe "create/2" do
@@ -163,42 +179,6 @@ defmodule DailyfoodWeb.MealControllerTest do
                  "measurement_date" => "2023-02-28T23:00:07"
                }
              } = first_meal
-
-      # assert [
-      #          %{
-      #            "meal" => %{
-      #              "description" => "Almoço",
-      #              "foods" => [
-      #                %{"description" => "Arroz", "weight" => 100},
-      #                %{"description" => "Arroz", "weight" => 100}
-      #              ],
-      #              "id" => _meal_id,
-      #              "measurement_date" => "2023-02-28T23:00:07"
-      #            }
-      #          },
-      #          %{
-      #            "meal" => %{
-      #              "description" => "Almoço",
-      #              "foods" => [
-      #                %{"description" => "Arroz", "weight" => 100},
-      #                %{"description" => "Carne", "weight" => 100}
-      #              ],
-      #              "id" => _meal_id,
-      #              "measurement_date" => "2023-03-01T23:00:07"
-      #            }
-      #          },
-      #          %{
-      #            "meal" => %{
-      #              "description" => "Almoço",
-      #              "foods" => [
-      #                %{"description" => "Arroz", "weight" => 100},
-      #                %{"description" => "Salada", "weight" => 100}
-      #              ],
-      #              "id" => _meal_id,
-      #              "measurement_date" => "2023-03-02T23:00:07"
-      #            }
-      #          }
-      #        ] = response
     end
 
     test "when given a invalid user id, return a error", %{conn: conn} do
@@ -209,6 +189,61 @@ defmodule DailyfoodWeb.MealControllerTest do
       response =
         conn
         |> get(Routes.meals_path(conn, :show, initial_date, final_date, user_id))
+        |> json_response(:not_found)
+
+      expected_response = %{"message" => "User not found"}
+
+      assert expected_response == response
+    end
+  end
+
+  describe "generate_pdf/2" do
+    setup %{conn: conn} do
+      user = insert(:user)
+      meal_ids = create_meals()
+
+      {:ok, conn: conn, user_id: user.id, meal_ids: meal_ids}
+    end
+
+    test "when given a valid ids, return a list of meals", %{
+      conn: conn,
+      meal_ids: meal_ids,
+      user_id: user_id
+    } do
+      params = %{"meal_ids" => meal_ids, "user_id" => user_id}
+
+      response =
+        conn
+        |> post(Routes.meals_path(conn, :generate_pdf, params))
+        |> json_response(:ok)
+
+      %{"url" => url} = response
+      includes_pdf = String.contains?(url, ".pdf")
+
+      assert %{"url" => _url} = response
+      assert true == includes_pdf
+    end
+
+    test "when given a meals list, return a error", %{conn: conn, user_id: user_id} do
+      params = %{"meal_ids" => [], "user_id" => user_id}
+
+      response =
+        conn
+        |> post(Routes.meals_path(conn, :generate_pdf), params)
+        |> json_response(:not_found)
+
+      expected_response = %{"message" => "Meals not found"}
+
+      assert expected_response == response
+    end
+
+    test "when given a invalid user id, return a error", %{conn: conn, meal_ids: meal_ids} do
+      user_id = "b4608c3d-eb45-4c4a-b6bc-474e080eeb9b"
+      params = %{"meal_ids" => meal_ids, "user_id" => user_id}
+
+      response =
+        conn
+        |> post(Routes.meals_path(conn, :generate_pdf, params))
         |> json_response(:not_found)
 
       expected_response = %{"message" => "User not found"}

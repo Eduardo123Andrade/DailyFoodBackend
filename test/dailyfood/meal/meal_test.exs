@@ -3,9 +3,9 @@ defmodule Dailyfood.Meal.MealTest do
 
   import Dailyfood.Factory
 
-  alias Ecto.Changeset
   alias Dailyfood.Foods.Food
   alias Dailyfood.Meals.Meal
+  alias Ecto.Changeset
 
   describe "changeset/2" do
     test "when all params are valid, return a valid changeset" do

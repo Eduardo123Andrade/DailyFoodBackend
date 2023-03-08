@@ -4,7 +4,7 @@ defmodule DailyfoodWeb.MealsController do
   alias Dailyfood.Meals.Meal
   alias Plug.Conn
 
-  alias DailyfoodWeb.{FallbackController}
+  alias DailyfoodWeb.FallbackController
 
   action_fallback FallbackController
 
@@ -17,10 +17,18 @@ defmodule DailyfoodWeb.MealsController do
   end
 
   def show(%Conn{} = conn, params) do
-    with {:ok, meals} <- Dailyfood.get_meals(params) do
+    with {:ok, meals} <- Dailyfood.get_meals_by_date(params) do
       conn
       |> put_status(:ok)
       |> render("meals.json", %{meals: meals})
+    end
+  end
+
+  def generate_pdf(%Conn{} = conn, params) do
+    with {:ok, file_path} <- Dailyfood.generate_meals_pdf(params) do
+      conn
+      |> put_status(:ok)
+      |> json(%{"url" => file_path})
     end
   end
 end
