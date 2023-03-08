@@ -1,23 +1,33 @@
 defmodule Dailyfood.PdfGenerator.PDFGenerator do
+  alias Dailyfood.Meals
+  alias Dailyfood.Error
   alias Dailyfood.UuidGenerator.UuidGenerator
   alias Dailyfood.PdfGenerator.HtmlGenerator
 
-  def call(%{"meal_ids" => meal_ids, "user_id" => user_id}) do
-    {:ok, meals} = Dailyfood.get_meals_by_ids(%{"meal_ids" => meal_ids, "user_id" => user_id})
+  def call(%{"user_id" => user_id} = params) do
+    with {:ok, user} <- Dailyfood.get_user_by_id(user_id),
+         {:ok, meals} <- Dailyfood.get_meals_by_ids(params),
+         {:ok, html_content} <- generate_pdf_content(meals, user),
+         {:ok, filename} <- PdfGenerator.generate(html_content, page_size: "A5", encoding: :utf8) do
+      output_filename = UuidGenerator.call()
 
-    html = HtmlGenerator.call(%{"meals" => meals, "user_id" => user_id})
-    filename = UuidGenerator.call()
-    IO.inspect(filename)
+      filename
+      |> move_to_pdf_folder(output_filename)
+      |> delete_temp_files()
 
-    html
-    |> PdfGenerator.generate(page_size: "A5", encoding: :utf8)
-    |> move_to_pdf_folder(filename)
-    |> delete_temp_files()
-
-    {:ok, "PDFs/#{filename}.pdf"}
+      {:ok, "PDFs/#{filename}.pdf"}
+    end
   end
 
-  defp move_to_pdf_folder({:ok, filename}, output_filename) do
+  defp generate_pdf_content([], _user_id) do
+    {:error, Error.build_meals_not_found_error()}
+  end
+
+  defp generate_pdf_content([%Meals.Meal{} = _meal | _] = meals, user) do
+    HtmlGenerator.call(%{meals: meals, user: user})
+  end
+
+  defp move_to_pdf_folder(filename, output_filename) do
     {:ok, pdf_content} = File.read(filename)
 
     File.write("PDFs/#{output_filename}.pdf", pdf_content)
