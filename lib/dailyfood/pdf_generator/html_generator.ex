@@ -1,8 +1,8 @@
 defmodule Dailyfood.PdfGenerator.HtmlGenerator do
-  alias Dailyfood.Users.User
   alias Dailyfood.Meals.Meal
-  alias Dailyfood.PdfGenerator.ZeroToLeft
   alias Dailyfood.PdfGenerator.RenderMeals
+  alias Dailyfood.PdfGenerator.ZeroToLeft
+  alias Dailyfood.Users.User
 
   def call(%{meals: meals, user: user}) do
     generate_pdf(user, meals)

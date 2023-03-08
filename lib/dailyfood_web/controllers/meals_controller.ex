@@ -4,7 +4,7 @@ defmodule DailyfoodWeb.MealsController do
   alias Dailyfood.Meals.Meal
   alias Plug.Conn
 
-  alias DailyfoodWeb.{FallbackController}
+  alias DailyfoodWeb.FallbackController
 
   action_fallback FallbackController
 

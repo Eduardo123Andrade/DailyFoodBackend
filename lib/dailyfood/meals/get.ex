@@ -1,9 +1,9 @@
 defmodule Dailyfood.Meals.Get do
   import Ecto.Query
 
-  alias Dailyfood.Users.User
   alias Dailyfood.Meals.Meal
   alias Dailyfood.Repo
+  alias Dailyfood.Users.User
 
   def by_date(%{"initial_date" => initial_date, "final_date" => final_date, "user_id" => user_id}) do
     start_time = format_date(initial_date, "0-0-0")

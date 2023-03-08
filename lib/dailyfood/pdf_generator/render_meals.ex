@@ -1,6 +1,6 @@
 defmodule Dailyfood.PdfGenerator.RenderMeals do
-  alias Dailyfood.PdfGenerator.{NormalizeString, RenderFoods, ZeroToLeft}
   alias Dailyfood.Meals.Meal
+  alias Dailyfood.PdfGenerator.{NormalizeString, RenderFoods, ZeroToLeft}
 
   def call(meals), do: Enum.map(meals, &render_meal/1)
 

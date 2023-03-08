@@ -1,11 +1,12 @@
 defmodule DailyfoodWeb.MealControllerTest do
-  alias Dailyfood.Meals.Meal
-  alias Dailyfood.Meals.Create
   use DailyfoodWeb.ConnCase, async: true
+
+  alias Dailyfood.Meals.Create
+  alias Dailyfood.Meals.Meal
 
   import Dailyfood.Factory
 
-  defp create_meals() do
+  defp create_meals do
     user_id = "957da868-ce7f-4eec-bcdc-97b8c992a60d"
     meal_ids = []
 

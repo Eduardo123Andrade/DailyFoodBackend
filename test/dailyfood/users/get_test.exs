@@ -4,7 +4,7 @@ defmodule Dailyfood.Users.GetTest do
   import Dailyfood.Factory
 
   alias Dailyfood.Error
-  alias Dailyfood.Users.{User, Get}
+  alias Dailyfood.Users.{Get, User}
 
   describe "by_id/1" do
     test "when exists a user with this id, return a user" do

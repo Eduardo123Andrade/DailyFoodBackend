@@ -2,10 +2,11 @@ defmodule Dailyfood do
   alias Dailyfood.Meals.Create, as: MealCreate
   alias Dailyfood.Meals.Get, as: MealGet
 
+  alias Dailyfood.PdfGenerator.PDFGenerator
+
   alias Dailyfood.Users.Create, as: UserCreate
   alias Dailyfood.Users.Get, as: UserGet
   alias Dailyfood.Users.Update, as: UserUpdate
-  alias Dailyfood.PdfGenerator.PDFGenerator
   alias Dailyfood.UuidGenerator.UuidGenerator
 
   defdelegate user_create(params), to: UserCreate, as: :call

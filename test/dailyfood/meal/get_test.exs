@@ -4,7 +4,7 @@ defmodule Dailyfood.Meal.GetTest do
   import Dailyfood.Factory
 
   alias Dailyfood.Error
-  alias Dailyfood.Meals.{Get, Create, Meal}
+  alias Dailyfood.Meals.{Create, Get, Meal}
   alias Dailyfood.Users.Create, as: UserCreate
 
   defp create_meals(user_id) do

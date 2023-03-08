@@ -1,8 +1,8 @@
 defmodule Dailyfood.PdfGenerator.PDFGenerator do
-  alias Dailyfood.Meals
   alias Dailyfood.Error
-  alias Dailyfood.UuidGenerator.UuidGenerator
+  alias Dailyfood.Meals
   alias Dailyfood.PdfGenerator.HtmlGenerator
+  alias Dailyfood.UuidGenerator.UuidGenerator
 
   def call(%{"user_id" => user_id} = params) do
     with {:ok, user} <- Dailyfood.get_user_by_id(user_id),
