@@ -1,4 +1,5 @@
 defmodule Dailyfood.PdfGenerator.PDFGenerator do
+  alias Dailyfood.RemovePdf.RemovePdf
   alias Dailyfood.Error
   alias Dailyfood.Meals
   alias Dailyfood.PdfGenerator.HtmlGenerator
@@ -11,6 +12,7 @@ defmodule Dailyfood.PdfGenerator.PDFGenerator do
          {:ok, filename} <- PdfGenerator.generate(html_content, page_size: "A5", encoding: :utf8),
          {:ok, output_path} <- move_to_pdf_folder(filename),
          {:ok, _} <- delete_temp_files(filename) do
+      RemovePdf.call(output_path)
       {:ok, output_path}
     end
   end
