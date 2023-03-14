@@ -1,6 +1,5 @@
 defmodule Dailyfood.PdfGenerator.HtmlGeneratorTest do
   alias Dailyfood.PdfGenerator.HtmlGenerator
-  alias Dailyfood.PdfGenerator.RenderMeals
   use Dailyfood.DataCase, async: true
   import Dailyfood.Factory
 
