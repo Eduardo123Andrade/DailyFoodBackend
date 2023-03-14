@@ -2,7 +2,7 @@ defmodule Dailyfood.RemovePdf.Sever do
   use GenServer
   require Logger
 
-  @one_hour_in_millisecond 600_000
+  @one_hour_in_millisecond 10_000
 
   def start_link(_initial_stack) do
     GenServer.start_link(__MODULE__, %{}, name: :delete_pdf_server)
