@@ -4,7 +4,7 @@ defmodule Dailyfood.PdfGenerator.PdfGeneratorTest do
   import Dailyfood.Factory
 
   alias Dailyfood.Error
-  alias Dailyfood.Meals.{Create, Get, Meal}
+  alias Dailyfood.Meals.{Create, Meal}
   alias Dailyfood.PdfGenerator.PDFGenerator
   alias Dailyfood.Users.Create, as: UserCreate
 
@@ -98,7 +98,7 @@ defmodule Dailyfood.PdfGenerator.PdfGeneratorTest do
 
       response = PDFGenerator.call(params)
 
-      expected_response = {:error, %Dailyfood.Error{status: :not_found, result: "User not found"}}
+      expected_response = {:error, %Error{status: :not_found, result: "User not found"}}
 
       assert expected_response == response
     end
@@ -108,8 +108,7 @@ defmodule Dailyfood.PdfGenerator.PdfGeneratorTest do
 
       response = PDFGenerator.call(params)
 
-      expected_response =
-        {:error, %Dailyfood.Error{status: :not_found, result: "Meals not found"}}
+      expected_response = {:error, %Error{status: :not_found, result: "Meals not found"}}
 
       assert expected_response == response
     end

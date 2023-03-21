@@ -15,9 +15,10 @@ defmodule Dailyfood.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Dailyfood.PubSub},
       # Start the Endpoint (http/https)
-      DailyfoodWeb.Endpoint
+      DailyfoodWeb.Endpoint,
       # Start a worker by calling: Dailyfood.Worker.start_link(arg)
       # {Dailyfood.Worker, arg}
+      Dailyfood.RemovePdf.Sever
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
