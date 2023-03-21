@@ -15,7 +15,9 @@ defmodule DailyfoodWeb.Router do
   scope "/api", DailyfoodWeb do
     pipe_through [:api, :auth]
 
-    resources "/users/", UsersController, except: [:new, :edit, :index, :delete, :create]
+    get "/users/", UsersController, :show
+    put "/users/", UsersController, :update
+
     post "/meals/create", MealsController, :create
     get "/meals/:initial_date/:final_date/:user_id", MealsController, :show
     post "/meals/generate-pdf", MealsController, :generate_pdf
