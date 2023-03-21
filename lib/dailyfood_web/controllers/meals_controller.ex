@@ -2,6 +2,7 @@ defmodule DailyfoodWeb.MealsController do
   use DailyfoodWeb, :controller
 
   alias Dailyfood.Meals.Meal
+  # alias Dailyfood.Users.User
   alias Plug.Conn
 
   alias DailyfoodWeb.FallbackController
@@ -9,6 +10,9 @@ defmodule DailyfoodWeb.MealsController do
   action_fallback FallbackController
 
   def create(%Conn{} = conn, params) do
+    # %User{id: id} = Guardian.Plug.current_resource(conn)
+    # IO.inspect(id, label: "TEST")
+    # Conn.resp(conn, :ok, "test")
     with {:ok, %Meal{} = meal} <- Dailyfood.meal_create(params) do
       conn
       |> put_status(:created)
