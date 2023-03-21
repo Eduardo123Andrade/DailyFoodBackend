@@ -19,7 +19,7 @@ defmodule DailyfoodWeb.Router do
     put "/users/", UsersController, :update
 
     post "/meals/create", MealsController, :create
-    get "/meals/:initial_date/:final_date/:user_id", MealsController, :show
+    get "/meals/:initial_date/:final_date", MealsController, :show
     post "/meals/generate-pdf", MealsController, :generate_pdf
   end
 
