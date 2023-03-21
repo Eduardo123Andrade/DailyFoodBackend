@@ -4,15 +4,16 @@ defmodule DailyfoodWeb.UsersController do
   alias Dailyfood.Users.User
   alias Plug.Conn
 
-  alias DailyfoodWeb.FallbackController
+  alias DailyfoodWeb.{Auth.Guardian, FallbackController}
 
   action_fallback FallbackController
 
   def create(%Conn{} = conn, params) do
-    with {:ok, %User{} = user} <- Dailyfood.user_create(params) do
+    with {:ok, %User{} = user} <- Dailyfood.user_create(params),
+         {:ok, token, _claims} <- Guardian.encode_and_sign(user) do
       conn
       |> put_status(:created)
-      |> render("create.json", user: user)
+      |> render("create.json", token: token, user: user)
     end
   end
 
