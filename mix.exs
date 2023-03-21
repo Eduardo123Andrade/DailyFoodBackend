@@ -42,6 +42,7 @@ defmodule Dailyfood.MixProject do
     [
       # phoenix
       {:elixir_uuid, "~> 1.2"},
+      {:guardian, "~> 2.0"},
       {:phoenix, "~> 1.6.15"},
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.6"},
@@ -63,7 +64,6 @@ defmodule Dailyfood.MixProject do
       {:ex_machina, "~> 2.7.0"},
       {:tesla, "~> 1.4"},
       {:hackney, "~> 1.17"},
-      {:guardian, "~> 2.0"},
 
       # Test
       {:excoveralls, "~> 0.10", only: :test},
