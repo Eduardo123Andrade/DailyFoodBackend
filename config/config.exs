@@ -7,6 +7,8 @@
 # General application configuration
 import Config
 
+guardian_secret_key = System.get_env("GUARDIAN_SECRET_KEY") || ""
+
 config :dailyfood,
   ecto_repos: [Dailyfood.Repo]
 
@@ -16,13 +18,11 @@ config :dailyfood, Dailyfood.Repo,
 
 config :dailyfood, DailyfoodWeb.Auth.Guardian,
   issuer: "dailyfood",
-  secret_key: "U3ZXz9iCAZ5pI4aTJrMW1Mah45lDXwObuHaoAqpWKoEfAjQxW6RHtWHVbjlnepqE"
+  secret_key: guardian_secret_key
 
 config :dailyfood, DailyfoodWeb.Auth.Pipeline,
   module: DailyfoodWeb.Auth.Guardian,
   error_handler: DailyfoodWeb.Auth.ErrorHandler
-
-# secret_key: "Secret key. You can use `mix guardian.gen.secret` to get one"
 
 # Configures the endpoint
 config :dailyfood, DailyfoodWeb.Endpoint,
