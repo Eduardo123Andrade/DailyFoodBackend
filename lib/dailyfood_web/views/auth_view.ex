@@ -11,5 +11,11 @@ defmodule DailyfoodWeb.AuthView do
     }
   end
 
-  # def render("user.json", %{user: %User{} = user}), do: %{user: user}
+  def render("sing_up.json", %{token: token, user: %User{} = user}) do
+    %{
+      message: "User created",
+      user: user,
+      token: token
+    }
+  end
 end

@@ -21,7 +21,7 @@ defmodule DailyfoodWeb.AuthController do
   def login(%Conn{} = conn, params) do
     with {:ok, %User{} = user, token} <- Guardian.authenticate(params) do
       conn
-      |> put_status(:created)
+      |> put_status(:ok)
       |> render("login.json", token: token, user: user)
     end
   end
