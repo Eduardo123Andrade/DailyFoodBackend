@@ -2,6 +2,7 @@ defmodule DailyfoodWeb.MealsController do
   use DailyfoodWeb, :controller
 
   alias Dailyfood.Meals.Meal
+  alias Dailyfood.Users.User
   alias Plug.Conn
 
   alias DailyfoodWeb.FallbackController
@@ -9,7 +10,10 @@ defmodule DailyfoodWeb.MealsController do
   action_fallback FallbackController
 
   def create(%Conn{} = conn, params) do
-    with {:ok, %Meal{} = meal} <- Dailyfood.meal_create(params) do
+    %User{id: id} = Guardian.Plug.current_resource(conn)
+    mapped_params = Map.put(params, "user_id", id)
+
+    with {:ok, %Meal{} = meal} <- Dailyfood.meal_create(mapped_params) do
       conn
       |> put_status(:created)
       |> render("create.json", meal: meal)
@@ -17,7 +21,10 @@ defmodule DailyfoodWeb.MealsController do
   end
 
   def show(%Conn{} = conn, params) do
-    with {:ok, meals} <- Dailyfood.get_meals_by_date(params) do
+    %User{id: id} = Guardian.Plug.current_resource(conn)
+    mapped_params = Map.put(params, "user_id", id)
+
+    with {:ok, meals} <- Dailyfood.get_meals_by_date(mapped_params) do
       conn
       |> put_status(:ok)
       |> render("meals.json", %{meals: meals})
@@ -25,7 +32,10 @@ defmodule DailyfoodWeb.MealsController do
   end
 
   def generate_pdf(%Conn{} = conn, params) do
-    with {:ok, file_path} <- Dailyfood.generate_meals_pdf(params) do
+    %User{id: id} = Guardian.Plug.current_resource(conn)
+    mapped_params = Map.put(params, "user_id", id)
+
+    with {:ok, file_path} <- Dailyfood.generate_meals_pdf(mapped_params) do
       conn
       |> put_status(:ok)
       |> json(%{"url" => file_path})

@@ -8,13 +8,25 @@ defmodule DailyfoodWeb.Router do
     plug UUIDChecker
   end
 
+  pipeline :auth do
+    plug DailyfoodWeb.Auth.Pipeline
+  end
+
+  scope "/api", DailyfoodWeb do
+    pipe_through [:api, :auth]
+
+    get "/users/", UsersController, :show
+    put "/users/", UsersController, :update
+
+    post "/meals/create", MealsController, :create
+    get "/meals/:initial_date/:final_date", MealsController, :show
+    post "/meals/generate-pdf", MealsController, :generate_pdf
+  end
+
   scope "/api", DailyfoodWeb do
     pipe_through :api
-
-    resources "/users/", UsersController, except: [:new, :edit, :index, :delete]
-    post "/meals/create", MealsController, :create
-    get "/meals/:initial_date/:final_date/:user_id", MealsController, :show
-    post "/meals/generate-pdf", MealsController, :generate_pdf
+    post "/auth/login", AuthController, :login
+    post "/auth/sing_up", AuthController, :sing_up
   end
 
   # Enables LiveDashboard only for development

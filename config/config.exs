@@ -14,6 +14,16 @@ config :dailyfood, Dailyfood.Repo,
   migration_primary_key: [type: :binary_id],
   migration_foreign_key: [type: :binary_id]
 
+config :dailyfood, DailyfoodWeb.Auth.Guardian,
+  issuer: "dailyfood",
+  secret_key: "U3ZXz9iCAZ5pI4aTJrMW1Mah45lDXwObuHaoAqpWKoEfAjQxW6RHtWHVbjlnepqE"
+
+config :dailyfood, DailyfoodWeb.Auth.Pipeline,
+  module: DailyfoodWeb.Auth.Guardian,
+  error_handler: DailyfoodWeb.Auth.ErrorHandler
+
+# secret_key: "Secret key. You can use `mix guardian.gen.secret` to get one"
+
 # Configures the endpoint
 config :dailyfood, DailyfoodWeb.Endpoint,
   url: [host: "localhost"],

@@ -1,6 +1,7 @@
 defmodule DailyfoodWeb.MealControllerTest do
   use DailyfoodWeb.ConnCase, async: true
 
+  alias DailyfoodWeb.Auth.Guardian
   alias Dailyfood.Meals.Create
   alias Dailyfood.Meals.Meal
 
@@ -76,8 +77,10 @@ defmodule DailyfoodWeb.MealControllerTest do
   describe "create/2" do
     setup %{conn: conn} do
       user = insert(:user)
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
-      {:ok, conn: conn, user_id: user.id}
+      {:ok, conn: conn, user_id: user.id, user: user}
     end
 
     test "when all params are valid, creates the meal", %{conn: conn, user_id: user_id} do
@@ -128,18 +131,21 @@ defmodule DailyfoodWeb.MealControllerTest do
       assert expected_response == response
     end
 
-    test "when the a invalid user id, return a not found error", %{conn: conn} do
+    test "when the a invalid user id, return a not found error", %{conn: conn, user: user} do
       food1 = build(:food_params)
-      user_id = "0a9eabfb-6eba-4c78-8bab-549185274097"
+      user_id = "36256a89-be68-4e86-907a-ea74ecb3c148"
+      user = Map.put(user, :id, user_id)
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
       params = build(:meal_params, %{"foods" => [food1], "user_id" => user_id})
 
       response =
         conn
         |> post(Routes.meals_path(conn, :create), params)
-        |> json_response(:not_found)
+        |> json_response(:unauthorized)
 
-      expected_response = %{"message" => "User not found"}
+      expected_response = %{"message" => "Invalid credentials"}
 
       assert expected_response == response
     end
@@ -149,17 +155,19 @@ defmodule DailyfoodWeb.MealControllerTest do
     setup %{conn: conn} do
       user = insert(:user)
       create_meals()
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
-      {:ok, conn: conn, user_id: user.id}
+      {:ok, conn: conn, user_id: user.id, user: user}
     end
 
-    test "when given a valid dates, return a list of meals", %{conn: conn, user_id: user_id} do
+    test "when given a valid dates, return a list of meals", %{conn: conn} do
       initial_date = "2023-02-28"
       final_date = "2023-03-02"
 
       response =
         conn
-        |> get(Routes.meals_path(conn, :show, initial_date, final_date, user_id))
+        |> get(Routes.meals_path(conn, :show, initial_date, final_date))
         |> json_response(:ok)
 
       [first_meal | _] = response
@@ -181,17 +189,20 @@ defmodule DailyfoodWeb.MealControllerTest do
              } = first_meal
     end
 
-    test "when given a invalid user id, return a error", %{conn: conn} do
+    test "when given a invalid user id, return a error", %{conn: conn, user: user} do
       initial_date = "2023-02-28"
       final_date = "2023-03-02"
       user_id = "b4608c3d-eb45-4c4a-b6bc-474e080eeb9b"
+      user = Map.put(user, :id, user_id)
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
       response =
         conn
-        |> get(Routes.meals_path(conn, :show, initial_date, final_date, user_id))
-        |> json_response(:not_found)
+        |> get(Routes.meals_path(conn, :show, initial_date, final_date))
+        |> json_response(:unauthorized)
 
-      expected_response = %{"message" => "User not found"}
+      expected_response = %{"message" => "Invalid credentials"}
 
       assert expected_response == response
     end
@@ -201,16 +212,14 @@ defmodule DailyfoodWeb.MealControllerTest do
     setup %{conn: conn} do
       user = insert(:user)
       meal_ids = create_meals()
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
-      {:ok, conn: conn, user_id: user.id, meal_ids: meal_ids}
+      {:ok, conn: conn, user_id: user.id, meal_ids: meal_ids, user: user}
     end
 
-    test "when given a valid ids, return a list of meals", %{
-      conn: conn,
-      meal_ids: meal_ids,
-      user_id: user_id
-    } do
-      params = %{"meal_ids" => meal_ids, "user_id" => user_id}
+    test "when given a valid ids, return a list of meals", %{conn: conn, meal_ids: meal_ids} do
+      params = %{"meal_ids" => meal_ids}
 
       response =
         conn
@@ -224,8 +233,8 @@ defmodule DailyfoodWeb.MealControllerTest do
       assert true == includes_pdf
     end
 
-    test "when given a meals list, return a error", %{conn: conn, user_id: user_id} do
-      params = %{"meal_ids" => [], "user_id" => user_id}
+    test "when given a meals list, return a error", %{conn: conn} do
+      params = %{"meal_ids" => []}
 
       response =
         conn
@@ -237,16 +246,24 @@ defmodule DailyfoodWeb.MealControllerTest do
       assert expected_response == response
     end
 
-    test "when given a invalid user id, return a error", %{conn: conn, meal_ids: meal_ids} do
+    test "when given a invalid user id, return a error", %{
+      conn: conn,
+      meal_ids: meal_ids,
+      user: user
+    } do
       user_id = "b4608c3d-eb45-4c4a-b6bc-474e080eeb9b"
       params = %{"meal_ids" => meal_ids, "user_id" => user_id}
+
+      user = Map.put(user, :id, user_id)
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
       response =
         conn
         |> post(Routes.meals_path(conn, :generate_pdf, params))
-        |> json_response(:not_found)
+        |> json_response(:unauthorized)
 
-      expected_response = %{"message" => "User not found"}
+      expected_response = %{"message" => "Invalid credentials"}
 
       assert expected_response == response
     end
