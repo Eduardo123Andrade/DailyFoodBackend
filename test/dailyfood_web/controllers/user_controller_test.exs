@@ -38,8 +38,6 @@ defmodule DailyfoodWeb.UsersControllerTest do
         |> get(Routes.users_path(conn, :show))
         |> json_response(:unauthorized)
 
-      IO.inspect(response)
-
       assert %{"message" => "Invalid credentials"} = response
     end
   end
@@ -92,8 +90,6 @@ defmodule DailyfoodWeb.UsersControllerTest do
         conn
         |> get(Routes.users_path(conn, :show))
         |> json_response(:unauthorized)
-
-      IO.inspect(response)
 
       assert %{"message" => "Invalid credentials"} = response
     end
