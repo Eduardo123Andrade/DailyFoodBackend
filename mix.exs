@@ -42,6 +42,7 @@ defmodule Dailyfood.MixProject do
     [
       # phoenix
       {:elixir_uuid, "~> 1.2"},
+      {:dotenv, "~> 2.0"},
       {:guardian, "~> 2.0"},
       {:phoenix, "~> 1.6.15"},
       {:phoenix_ecto, "~> 4.4"},
